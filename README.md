@@ -2,7 +2,7 @@
 MewGem Link module for bots
 ## Start Up Code Sample
 ```js
-const mewgemlink = require('../main.js');
+const mewgemlink = require('mewgemlink');
 const app = new mewgemlink('test','testtkn');
 
 main();
@@ -14,4 +14,4 @@ await app.connect().then((res) => {
 })
 }
 ```
-output: `Authed as {APPNAME}!`
+output: `Authed as test!`
