@@ -1,47 +1,80 @@
 const ws = require('ws');
-const client = new ws('ws://localhost:4040');
+
 class mgapp {
 constructor (id,token) {
+        this.client = new ws('ws://localhost:4040');
         this.id = id;
         this.token = token;
+        this.messageHandlers = [];
+        this.client.on('message', (data) => {
+            let msg = JSON.parse(data);
+            this.handleMessage(msg);
+            });
     }
     connect = async () => {
-        return new Promise((resolve, reject) => {
-        client.on('open', () => {
-            client.send(JSON.stringify({
+        return new Promise((resolve, reject) => {    
+          this.client.on('open', () => {
+            this.client.send(
+              JSON.stringify({
                 client: 'app',
                 channel: 'auth',
                 action: 'login',
-                auth:{
-                id: this.id,
-                token: this.token
-                }
-            }));
-        });
-        client.on('message', (data) => {
-        let msg = JSON.parse(data);
-        if(msg.channel == 'auth') {
-            if(msg.status == 200) {
-                this.name = msg.name;
-                return resolve("Authed as "+msg.name+"!")
+                auth: {
+                  id: this.id,
+                  token: this.token,
+                },
+              })
+            );
+          });
+    
+          this.client.on('message', (data) => {
+            let msg = JSON.parse(data);
+            if (msg.channel == 'auth') {
+                if (msg.status == 200) {
+            return resolve("Logged in as " + msg.name);
             } else {
-                reject("Auth failed!")
+                return reject(msg.error);
             }
+            }
+          });    
+        });
+      }
+
+      handleMessage = (msg) => {
+        for (const entry of this.messageHandlers) {
+          const { event, handler } = entry;
+          if (event === msg.event) {
+            handler(msg);
+          }
         }
-        if(msg.channel == 'error') {
-            reject(msg.error)
+      }
+      
+    
+    on = (event, handler) => {
+        const existingHandler = this.messageHandlers.find(entry => entry.event === event);
+        if (existingHandler) {
+          existingHandler.handler = handler;
+        } else {
+          this.messageHandlers.push({ event, handler });
         }
-        })
-    })
-}
-    createcall = async (user,perms,redirect) => {
+      }
+      
+      
+      
+    
+    createcall = async (perms,once,redirect) => {
         return new Promise((resolve, reject) => {
             if(!redirect) redirect = 'none';
-            client.send(JSON.stringify({
+            if(!once) once = false;
+            // check to see if perms is an array
+            if(!Array.isArray(perms)) {
+                return reject("perms must be an array!")
+            }
+            this.client.send(JSON.stringify({
                 client: 'app',
-                channel: 'tpa',
+                channel: 'app',
                 action: 'createcall',
-                user: user,
+                once: once,
                 perms: perms,
                 redirect: redirect,
                 auth:{
@@ -49,11 +82,11 @@ constructor (id,token) {
                     token: this.token
                     }
             }));
-            client.on('message', (data) => {
+            this.client.on('message', (data) => {
                 let msg = JSON.parse(data);
-                if(msg.channel == 'tpa') {
+                if(msg.channel == 'app') {
                     if(msg.status == 200) {
-                        return resolve(msg.url)
+                        return resolve({url:msg.url,callid:msg.callid})
                     } else {
                         reject(msg.error)
                     }
@@ -67,8 +100,9 @@ constructor (id,token) {
     permTypes = {
         VIEW_PROFILE: 'view_profile',
         VIEW_FRIENDS: 'view_friends',
-        VIEW_GROUPS: 'view_groups',
-        VIEW_MESSAGES: 'view_messages',
+        VIEW_CHATS: 'view_chats',
+        VIEW_POSTS: 'view_posts',
+        VIEW_FOLLOWED: 'view_followed',
     }
 }
 module.exports = mgapp;
