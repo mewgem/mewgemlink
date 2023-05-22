@@ -104,5 +104,8 @@ constructor (id,token) {
         VIEW_POSTS: 'view_posts',
         VIEW_FOLLOWED: 'view_followed',
     }
+    actions = {
+        GET_PROFILE: 'get_profile',
+    }
 }
 module.exports = mgapp;
