@@ -2,7 +2,7 @@ const ws = require('ws');
 
 class mgapp {
 constructor (id,token) {
-        this.client = new ws('ws://localhost:4040');
+        this.client = new ws('wss://api.mewgem.net');
         this.id = id;
         this.token = token;
         this.messageHandlers = [];
@@ -97,15 +97,45 @@ constructor (id,token) {
             })
         })
     }
+    usecall = async (callid,action) => {
+      return new Promise((resolve, reject) => {
+        if(!callid) return reject("callid is required!")
+        if(!action) return reject("action is required!")
+        this.client.send(JSON.stringify({
+          client: 'app',
+          channel: 'app',
+          action: 'usecall',
+          use: action,
+          callid: callid,
+          auth:{
+              id: this.id,
+              token: this.token
+              }
+      }));
+      this.client.on('message', (data) => {
+        let msg = JSON.parse(data);
+        if(msg.channel == 'app') {
+            if(msg.status == 200) {
+                return resolve({data:msg.data,callid:msg.callid,type:msg.type})
+            } else {
+                reject(msg.error)
+            }
+        }
+        if(msg.channel == 'error') {
+            reject(msg.error)
+        }
+      })
+      })
+    }
     permTypes = {
         VIEW_PROFILE: 'view_profile',
         VIEW_FRIENDS: 'view_friends',
-        VIEW_CHATS: 'view_chats',
-        VIEW_POSTS: 'view_posts',
-        VIEW_FOLLOWED: 'view_followed',
+        VIEW_FOLLOWING: 'view_following',
     }
     actions = {
         GET_PROFILE: 'get_profile',
+        GET_FOLLOWERS: 'get_following',
+        GET_FRIENDS: 'get_friends',
     }
 }
 module.exports = mgapp;
