@@ -113,8 +113,8 @@ constructor (id,token) {
               }
       }));
       this.client.on('message', (data) => {
-        let msg = JSON.parse(data);
-        if(msg.channel == 'app') {
+        var msg = JSON.parse(data);
+        if(msg.channel == 'app' && msg.event == 'callback') {
             if(msg.status == 200) {
                 return resolve({data:msg.data,callid:msg.callid,type:msg.type})
             } else {
