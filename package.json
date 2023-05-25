@@ -1,5 +1,26 @@
 {
   "dependencies": {
     "ws": "^8.13.0"
-  }
+  },
+  "name": "mewgemlink",
+  "description": "MewGem Link module for bots\r ## Start Up Code Sample\r ```js\r const mewgemlink = require('mewgemlink');\r const app = new mewgemlink('test','testtkn');",
+  "version": "0.0.1",
+  "main": "main.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mewgem/mewgemlink.git"
+  },
+  "author": "mewgme",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mewgem/mewgemlink/issues"
+  },
+  "homepage": "https://github.com/mewgem/mewgemlink#readme"
 }
