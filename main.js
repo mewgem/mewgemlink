@@ -29,7 +29,7 @@ constructor (id,token) {
     
           this.client.on('message', (data) => {
             let msg = JSON.parse(data);
-            if (msg.channel == 'auth') {
+            if (msg.channel == 'auth' & msg.event == 'connection') {
                 if (msg.status == 200) {
             return resolve("Logged in as " + msg.name);
             } else {
@@ -84,7 +84,7 @@ constructor (id,token) {
             }));
             this.client.on('message', (data) => {
                 let msg = JSON.parse(data);
-                if(msg.channel == 'app') {
+                if(msg.channel == 'app' && msg.event == 'callcreation') {
                     if(msg.status == 200) {
                         return resolve({url:msg.url,callid:msg.callid})
                     } else {

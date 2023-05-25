@@ -4,7 +4,7 @@
   },
   "name": "mewgemlink",
   "description": "MewGem Link module for bots\r ## Start Up Code Sample\r ```js\r const mewgemlink = require('mewgemlink');\r const app = new mewgemlink('test','testtkn');",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "main.js",
   "directories": {
     "test": "tests"
