@@ -131,11 +131,13 @@ constructor (id,token) {
         VIEW_PROFILE: 'view_profile',
         VIEW_FRIENDS: 'view_friends',
         VIEW_FOLLOWING: 'view_following',
+        VIEW_PLAYMG: 'view_playmg'
     }
     actions = {
         GET_PROFILE: 'get_profile',
         GET_FOLLOWERS: 'get_following',
         GET_FRIENDS: 'get_friends',
+        GET_PLAYMG: 'get_playmg'
     }
 }
 module.exports = mgapp;
